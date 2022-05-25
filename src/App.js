@@ -7,6 +7,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import List from "./components/List";
 import ShareList from "./components/ShareList";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (

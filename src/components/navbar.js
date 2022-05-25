@@ -12,19 +12,19 @@ const Navbar = ()=> {
       
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
+            <li class="nav-item active ml-4">
               <NavLink class="nav-link" to="/">Home <span class="sr-only">(current)</span></NavLink>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item ml-4">
               <NavLink class="nav-link" to="/signup">Signup <span class="sr-only">(current)</span></NavLink>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item ml-4">
               <NavLink class="nav-link" to="/login">Login <span class="sr-only">(current)</span></NavLink>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item ml-4">
               <NavLink class="nav-link" to="/list">List <span class="sr-only">(current)</span></NavLink>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item ml-4">
               <NavLink class="nav-link" to="/sharelist">ShareList <span class="sr-only">(current)</span></NavLink>
             </li>
           </ul>
