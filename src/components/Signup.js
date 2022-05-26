@@ -41,7 +41,7 @@ const Signup = () => {
           } else {
             console.log("valid regestration");
             window.alert("valid registration");
-            history("/");
+            history("/login");
           }
         }
       };

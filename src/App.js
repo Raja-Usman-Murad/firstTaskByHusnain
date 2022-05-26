@@ -7,7 +7,7 @@ import Signup from "./components/Signup";
 import Login from "./components/Login";
 import List from "./components/List";
 import ShareList from "./components/ShareList";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+// import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
@@ -19,7 +19,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/list" element={<List />} />
         <Route path="/sharelist" element={<ShareList />} />
-        <Route element={<Error />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </>
   );
