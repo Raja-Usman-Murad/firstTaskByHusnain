@@ -25,7 +25,7 @@ const Login = () => {
             alert("invalid credentials");
           } else {
             alert("valid credentials");
-            history("/");
+            history("/list");
           }
         }
       };

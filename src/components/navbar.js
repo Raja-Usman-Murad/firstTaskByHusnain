@@ -11,21 +11,21 @@ const Navbar = ()=> {
         </button>
       
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item active ml-4">
-              <NavLink className="nav-link" to="/">Home <span className="sr-only">(current)</span></NavLink>
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item active mr-4">
+              <NavLink className="nav-link" to="/">Home </NavLink>
             </li>
             <li className="nav-item ml-4">
-              <NavLink className="nav-link" to="/signup">Signup <span className="sr-only">(current)</span></NavLink>
+              <NavLink className="nav-link" to="/signup">Signup </NavLink>
             </li>
             <li className="nav-item ml-4">
-              <NavLink className="nav-link" to="/login">Login <span className="sr-only">(current)</span></NavLink>
+              <NavLink className="nav-link" to="/login">Login </NavLink>
             </li>
             <li className="nav-item ml-4">
-              <NavLink className="nav-link" to="/list">List <span className="sr-only">(current)</span></NavLink>
+              <NavLink className="nav-link" to="/list">List </NavLink>
             </li>
             <li className="nav-item ml-4">
-              <NavLink className="nav-link" to="/sharelist">ShareList <span className="sr-only">(current)</span></NavLink>
+              <NavLink className="nav-link" to="/sharelist">ShareList </NavLink>
             </li>
           </ul>
           <form className="form-inline my-2 my-lg-0">
