@@ -47,7 +47,8 @@ if(title === '' || description === '' || date === '') {
     const currentList = {
         title:title,
         description: description,
-        date:date
+        date:date,
+        id:Math.random()
     }
     console.log(currentList);
     setLists((prevList) => {
@@ -62,6 +63,23 @@ if(title === '' || description === '' || date === '') {
 )
     // console.log(lists,'final list');
   };
+
+  const deleteHandler = (e) => {
+    setLists((prevlist) => {
+        console.log(prevlist , 'deleted prev list');
+        const updatedLists = prevlist.filter((list) => {
+            console.log(list.id);
+            console.log(e.target.id);
+            console.log(list.id != e.target.id);
+            return list.id != e.target.id
+        });
+        console.log(updatedLists);
+        // localStorage.setItem("Goals", JSON.stringify(updatedGoals));
+        return updatedLists;
+      });
+
+  }
+
   useEffect(() => {
     userList();
   },);
@@ -115,10 +133,12 @@ if(title === '' || description === '' || date === '') {
       {lists.map((list, index) => {
             return (
               <CardListItem
-                key={index}
+                key={list.id}
+                id={list.id}
                 title={list.title}
                 description={list.description}
                 date={list.date}
+                onDelete = {deleteHandler}
               ></CardListItem>
             );
           })}
