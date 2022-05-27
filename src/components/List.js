@@ -1,14 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import CardListItem from "./CardListItem";
+import AddCard from "./AddListItem";
 
 const List = () => {
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [lists, setLists] = useState([])
   const history = useNavigate();
-  const userList = async () => {
+  const ref = useRef(null)
+
+  const [tdd , setTdd] = useState({
+    title:'',
+    description:'',
+    date:''
+  })
+  const [etdd , seteTdd] = useState({
+    etitle:'',
+    edescription:'',
+    edate:''
+  })
+
+  const [lists, setLists] = useState([]);
+
+
+  const userAuthentication = async () => {
     try {
       const res = await fetch("/list", {
         method: "GET",
@@ -19,8 +32,7 @@ const List = () => {
         credentials: "include",
       });
       const data = await res.json();
-      console.log(data, "data from contact front end");
-      //   setUserData(data);
+      console.log(data);
       if (!res.status === 200) {
         throw new Error(res.error);
       }
@@ -29,124 +41,167 @@ const List = () => {
       history("/login");
     }
   };
- const titleChangeHandler = (e) => {
-    setTitle(e.target.value);
- }
- const descriptionChangeHandler = (e) => {
-    setDescription(e.target.value);
- }
- const dateChangeHandler = (e) => {
-    setDate(e.target.value);
- }
+  const ChangeHandler = (e) => {
+    console.log('changed occur tdd');
+    setTdd({...tdd , [e.target.name]: e.target.value});
+  };
+  const ChangeHandlerE = (e) => {
+    console.log(e.target.value , e.target.name);
+    console.log('changed occur E');
+    seteTdd({...etdd , [e.target.name]: e.target.value});
+  };
+
   const addNoteHandler = (e) => {
-e.preventDefault()
-if(title === '' || description === '' || date === '') {
-    alert('fill all fields')
-    return;
-}
-    const currentList = {
-        title:title,
-        description: description,
-        date:date,
-        id:Math.random()
+    e.preventDefault();
+    if (tdd.title === "" || tdd.description === "" || tdd.date === "") {
+      alert("fill all fields");
+      return;
     }
-    console.log(currentList);
     setLists((prevList) => {
-        setDate('');
-        setDescription('')
-        setTitle('')
-        return (
-            prevList.concat(currentList)
-        )
-    }
-         
-)
-    // console.log(lists,'final list');
+      setTdd({
+        title:'',
+        description:'',
+        date:'',
+      })
+      const currentList = {...tdd , id:Math.random()}
+
+      return prevList.concat(currentList);
+    });
   };
 
   const deleteHandler = (e) => {
+    console.log('deleted');
     setLists((prevlist) => {
-        console.log(prevlist , 'deleted prev list');
-        const updatedLists = prevlist.filter((list) => {
-            console.log(list.id);
-            console.log(e.target.id);
-            console.log(list.id != e.target.id);
-            return list.id != e.target.id
-        });
-        console.log(updatedLists);
-        // localStorage.setItem("Goals", JSON.stringify(updatedGoals));
-        return updatedLists;
+      console.log(prevlist);
+      const updatedLists = prevlist.filter((list) => {
+        console.log(list.id , e.target.id);
+        // console.log(+list.id != +e.target.id);
+        return +list.id != +e.target.id;
       });
+      // localStorage.setItem();
+      return updatedLists;
+    });
+  };
 
-  }
+  const updateHandler = (list) => {
+    ref.current.click();
+    seteTdd({etitle:list.title,edescription:list.description,edate:list.date , id:list.id});
+  };
+
+const editSaveHandler = () => {
+  let newEtdd = lists.filter(({id})=>{
+return id == etdd.id
+  })
+  console.log(newEtdd);
+  newEtdd.push(etdd);
+  setLists(newEtdd)
+  console.log('edit save',etdd , etdd.id);
+ 
+}
 
   useEffect(() => {
-    userList();
-  },);
+    userAuthentication();
+  });
   return (
     <>
-      {/* MAIN CONTAINER */}
-      <div className="container my-3">
-        <h2>Enter Your List</h2>
-        {/* firstContainer */}
-        <form>
-          <div className="card">
-            <div className="card-body">
-              <h5 className="card-title">Name/Title</h5>
-              <div className="form-group">
-                <input className="form-control" rows="3" value={title} onChange={titleChangeHandler} required></input>
-              </div>
-              <h5 className="card-title">description</h5>
-              <div className="form-group">
-                <input className="form-control" rows="3" value={description} onChange={descriptionChangeHandler} required></input>
-              </div>
-              <h5 className="card-title">Date</h5>
-              <div className="form-group">
-                <input
-                onChange={dateChangeHandler}
-                  className="form-control"
-                  type="date"
-                  rows="3"
-                  required
-                  value={date}
-                ></input>
-              </div>
-              <br></br>
+      <AddCard
+        onclick={addNoteHandler}
+        title={tdd.title}
+        description={tdd.description}
+        date={tdd.date}
+        onChange = {ChangeHandler}
+      />
+
+      <button
+        ref={ref}
+        type="button"
+        className="btn btn-primary d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        Launch demo modal
+      </button>
+
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Edit List
+              </h5>
               <button
-                className="btn btn-primary"
-                onClick={addNoteHandler}
-                id="addBtn"
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="modal-body">
+              <form>
+                <div className="card">
+                  <div className="card-body">
+                    <h5 className="card-title">Title</h5>
+                    <div className="form-group">
+                      <input className="form-control" name="etitle" value={etdd.etitle} onChange={ChangeHandlerE} rows="3" required></input>
+                    </div>
+                    <h5 className="card-title">description</h5>
+                    <div className="form-group">
+                      <input className="form-control" name="edescription" value={etdd.edescription} onChange={ChangeHandlerE} rows="3" required></input>
+                    </div>
+                    <h5 className="card-title">Date</h5>
+                    <div className="form-group">
+                      <input
+                      name="edate"
+                      value={etdd.edate}
+                      onChange={ChangeHandlerE}
+                        className="form-control"
+                        type="date"
+                        rows="3"
+                        required
+                      ></input>
+                    </div>
+                    <br></br>
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-bs-dismiss="modal"
               >
-                Add List{" "}
+                Close
+              </button>
+              <button type="button" onClick={editSaveHandler} className="btn btn-primary">
+                Save changes
               </button>
             </div>
           </div>
-        </form>
-
-        {/* firstContainer End */}
-        <hr />
-        <h2>Your Lists</h2>
-        <hr />
-        {/* secondContainer */}
-        <div id="notes" className="row container-fluid">
+        </div>
+      </div>
 
       {lists.map((list, index) => {
-            return (
-              <CardListItem
-                key={list.id}
-                id={list.id}
-                title={list.title}
-                description={list.description}
-                date={list.date}
-                onDelete = {deleteHandler}
-              ></CardListItem>
-            );
-          })}
-   
-        
-        </div>
-        {/* secondContainer End */}
-      </div>
+        return (
+          <CardListItem
+            list={list}
+            key={list.id}
+            id={list.id}
+            title={list.title}
+            description={list.description}
+            date={list.date}
+            onDelete={deleteHandler}
+            onUpdateList={updateHandler}
+          ></CardListItem>
+        );
+      })}
+      {/* secondContainer End */}
       {/* MAIN CONTAINER END */}
     </>
   );
