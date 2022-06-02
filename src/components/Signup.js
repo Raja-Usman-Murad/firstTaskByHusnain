@@ -26,7 +26,7 @@ const Signup = () => {
           alert("password does not match");
           // history.push("/registration");
         } else {
-          const res = await fetch("/register", {
+          const res = await fetch("http://localhost:5000/register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -34,14 +34,15 @@ const Signup = () => {
             body: JSON.stringify({ name, email, phone, work, password, cpassword }),
           });
           const data = await res.json();
-          console.log(data, typeof data);
-          if (res.status === 422 || !data) {
-            console.log("invalid regestration");
-            window.alert("invalid registration");
-          } else {
-            console.log("valid regestration");
-            window.alert("valid registration");
+          console.log(data);
+          if(data.success === true) {
+            // save the auth token and redirect
+            // localStorage.setItem('token',data.authToken)
+            alert("valid credentials");
             history("/login");
+          }
+          else{
+            alert(data.error);
           }
         }
       };

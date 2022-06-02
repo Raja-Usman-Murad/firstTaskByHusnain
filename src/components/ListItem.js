@@ -1,5 +1,13 @@
-import React from "react";
-const CardListItem = ({ title, description, date, onDelete, id , onUpdateList,list }) => {
+import React, { useContext } from "react";
+import listContext from "../context/lists/ListContext";
+const ListItem = (props) => {
+  const {list,updateList} = props
+  const context = useContext(listContext)
+  const {deleteList} = context;
+
+  const deleteHandler = (id) => {
+    deleteList(id);
+  };
   return (
     <>
       <div id="notes" className="row container-fluid">
@@ -8,26 +16,26 @@ const CardListItem = ({ title, description, date, onDelete, id , onUpdateList,li
             <input
               type="text"
               disabled
-              value={title}
+              value={list.title}
               className="card-title"
             ></input>
             <input
               type="text"
               disabled
-              value={description}
+              value={list.description}
               className="card-title"
             ></input>
             <input
               type="text"
               disabled
-              value={date}
+              value={list.date}
               className="card-title"
             ></input>
             <p className="card-text"></p>
-            <button className="btn btn-secondary m-2" onClick={()=>{onUpdateList(list)}} id={id}>
+            <button className="btn btn-secondary m-2" onClick={() => {updateList(list)}}>
               Edit list
             </button>
-            <button className="btn btn-danger" id={id} onClick={onDelete}>
+            <button className="btn btn-danger"  onClick={() => {deleteHandler(list._id)}}>
               Delete list
             </button>
           </div>
@@ -36,4 +44,4 @@ const CardListItem = ({ title, description, date, onDelete, id , onUpdateList,li
     </>
   );
 };
-export default CardListItem;
+export default ListItem;

@@ -1,5 +1,6 @@
 import React from "react";
 import { Route, Routes } from "react-router-dom";
+import ListState from "./context/lists/ListState";
 import Navbar from "./components/navbar";
 import Error from "./components/Error";
 import Home from "./components/Home";
@@ -12,7 +13,8 @@ function App() {
   return (
     <>
     <Navbar />
-      <Routes>
+    <ListState>
+    <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
@@ -20,6 +22,7 @@ function App() {
         <Route path="/sharelist" element={<ShareList />} />
         <Route path="*" element={<Error />} />
       </Routes>
+      </ListState>
     </>
   );
 }

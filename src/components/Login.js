@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 const Login = () => {
@@ -7,12 +7,11 @@ const Login = () => {
     const history = useNavigate();
 
     const submitData = async (e) => {
-        console.log("it is submit section");
         e.preventDefault();
         if (!email || !password) {
           alert("fill all the fields");
         } else {
-          const res = await fetch("/signin", {
+          const res = await fetch("http://localhost:5000/signin", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -21,14 +20,23 @@ const Login = () => {
           });
           const data = await res.json();
           console.log(data);
-          if (res.status === 400 || !data) {
-            alert("invalid credentials");
-          } else {
+          if(data.success === true) {
+            // save the auth token and redirect
+            localStorage.setItem('token',data.authToken)
             alert("valid credentials");
             history("/list");
           }
+          else{
+            alert("invalid credentials");
+          }  
         }
       };
+useEffect(() => {
+  if (localStorage.getItem('token')) {
+    history("/list");
+  }
+  // eslint-disable-next-line
+}, [])
 
     return(
         <>
