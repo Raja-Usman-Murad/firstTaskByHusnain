@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
-const Signup = () => {
-  const [user, setUser] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    work: "",
-    password: "",
-    cpassword: "",
-    photo: "",
-  });
+import listContext from "../context/lists/ListContext";
+const UpdateUser = () => {
+  const context = useContext(listContext);
+  console.log(context, "context");
+  const { userDetail, getUser } = context;
+  const [user, setUser] = useState(userDetail);
   const history = useNavigate();
-  // let name, value;
+
   const handleInputs = (e) => {
     let { name, value } = e.target;
+    console.log(name, value);
     setUser({ ...user, [name]: value });
   };
-
   const handlePhoto = (e) => {
     let { files } = e.target;
     function encodeImageFileAsURL(file) {
@@ -29,66 +24,38 @@ const Signup = () => {
     }
     encodeImageFileAsURL(files[0]);
   };
+
   const postData = async (e) => {
     e.preventDefault();
-    const { name, email, phone, work, password, cpassword, photo } = user;
-
-    // const formData = new FormData();
-    // formData.append("name", name);
-    // formData.append("email", email);
-    // formData.append("phone", phone);
-    // formData.append("work", work);
-    // formData.append("password", password);
-    // formData.append("cpassword", cpassword);
-    // formData.append("photo", photo);
-
-    if (
-      !name ||
-      !email ||
-      !phone ||
-      !work ||
-      !password ||
-      !cpassword ||
-      !photo
-    ) {
+    const { name, email, phone, work, photo } = user;
+    if (!name || !email || !phone || !work || !photo) {
       alert("fill all the data");
       // history.push("/registration");
-    } else if (password !== cpassword) {
-      alert("password does not match");
-      // history.push("/registration");
     } else {
-      const res = await fetch("http://localhost:5000/register", {
-        method: "POST",
+      const res = await fetch("http://localhost:5000/updateUser", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          work,
-          password,
-          cpassword,
-          photo,
-        }),
+        body: JSON.stringify({ name, email, phone, work, photo }),
       });
       const data = await res.json();
-      console.log(data);
       if (data.status === "success") {
-        // save the auth token and redirect
-        // localStorage.setItem('token',data.authToken)
-        alert("valid credentials");
-        history("/login");
+        alert("Data Updated Successfully");
+        history("/");
+        window.location.reload(true);
       } else {
         alert(`fail ${data.message}`);
       }
     }
   };
+
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      alert(`Please Logout First then signup`);
-      history("/");
+    if (!localStorage.getItem("token")) {
+      history("/login");
     }
+    getUser();
     // eslint-disable-next-line
   }, []);
   return (
@@ -101,9 +68,9 @@ const Signup = () => {
                 <div className="row">
                   <div className="col-md-6 col-10 order-sm-1 order-md-0">
                     <h1 className="mt-5" id="signup-heading">
-                      Sign <span id="logohalfcolorchange">Up</span>
+                      Update <span id="logohalfcolorchange">User</span>
                     </h1>
-                    <form method="POST" className="mt-3">
+                    <form className="mt-3">
                       <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
                         <div className="mr-3">
                           <i className="zmdi zmdi-account zmdi-hc-3x mr-3"></i>
@@ -164,36 +131,7 @@ const Signup = () => {
                           placeholder="Your Profession"
                         />
                       </div>
-                      <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
-                        <div className="mr-2">
-                          <i className="zmdi zmdi-lock zmdi-hc-3x mr-3"></i>
-                        </div>
-                        <input
-                          required
-                          onChange={handleInputs}
-                          value={user.password}
-                          type="password"
-                          className="form-control"
-                          id="password"
-                          name="password"
-                          placeholder="Your Password"
-                        />
-                      </div>
-                      <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
-                        <div className="mr-2">
-                          <i className="zmdi zmdi-lock zmdi-hc-3x mr-3"></i>
-                        </div>
-                        <input
-                          required
-                          onChange={handleInputs}
-                          value={user.cpassword}
-                          type="password"
-                          className="form-control"
-                          id="cpassword"
-                          name="cpassword"
-                          placeholder="Confirm Password"
-                        />
-                      </div>
+
                       <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
                         <div className="mr-2">
                           <i className="zmdi zmdi-email zmdi-hc-3x mr-3"></i>
@@ -213,7 +151,7 @@ const Signup = () => {
                           onClick={postData}
                           type="submit"
                           name="registration"
-                          value="Register"
+                          value="Update User Data"
                           id="registration"
                           className="form-submit btn btn-primary p-2 btn-lg "
                         />
@@ -224,9 +162,9 @@ const Signup = () => {
                     <NavLink
                       exact
                       className="navbar-brand text-dark"
-                      to="/login"
+                      to="/list"
                     >
-                      I am already registered
+                      Lists Page
                     </NavLink>
                   </div>
                 </div>
@@ -238,4 +176,4 @@ const Signup = () => {
     </>
   );
 };
-export default Signup;
+export default UpdateUser;

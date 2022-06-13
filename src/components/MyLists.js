@@ -4,13 +4,13 @@ import listContext from "../context/lists/ListContext";
 import ListItem from "./ListItem";
 
 const MyLists = () => {
-const history = useNavigate();
+  const history = useNavigate();
   const ref = useRef(null);
   const refClose = useRef(null);
   const context = useContext(listContext);
   const { lists, getAllnotes, editList } = context;
   const [list, setlist] = useState({
-    eId:'',
+    eId: "",
     etitle: "",
     edescription: "",
     edate: "",
@@ -19,11 +19,11 @@ const history = useNavigate();
   const updateList = (currentList) => {
     ref.current.click();
     setlist({
-        eId:currentList._id,
-        etitle:currentList.title,
-        edescription:currentList.description,
-        edate:currentList.date,
-    })
+      eId: currentList._id,
+      etitle: currentList.title,
+      edescription: currentList.description,
+      edate: currentList.date,
+    });
   };
 
   const OnChangeHandler = (e) => {
@@ -37,17 +37,16 @@ const history = useNavigate();
       alert("fill all fields");
       return;
     }
-    editList(list.eId,list.etitle,list.edescription,list.edate)
+    editList(list.eId, list.etitle, list.edescription, list.edate);
     refClose.current.click();
-  
   };
 
   useEffect(() => {
-      if(localStorage.getItem('token')){
-          getAllnotes();
-      }else{
-        history("/login");
-      }
+    if (localStorage.getItem("token")) {
+      getAllnotes();
+    } else {
+      history("/login");
+    }
     // eslint-disable-next-line
   }, []);
 

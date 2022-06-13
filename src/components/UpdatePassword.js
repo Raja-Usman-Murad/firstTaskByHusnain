@@ -1,61 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [emailForget, setEmailForget] = useState("");
-  const [password, setPassword] = useState("");
+const UpdatePassword = () => {
+  const [currentPassword, setcurrentPassword] = useState("");
+  const [newPassword, setnewPassword] = useState("");
+  const [newPasswordConfirm, setnewPasswordConfirm] = useState("");
   const history = useNavigate();
-
   const submitData = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
+    console.log("update password");
+    if (!currentPassword || !newPassword || !newPasswordConfirm) {
       alert("fill all the fields");
     } else {
-      const res = await fetch("http://localhost:5000/signin", {
-        method: "POST",
+      const res = await fetch("http://localhost:5000/updatePassword", {
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          passwordCurrent: currentPassword,
+          password: newPassword,
+          cpassword: newPasswordConfirm,
+        }),
       });
       const data = await res.json();
       console.log(data);
       if (data.status === "success") {
         // save the auth token and redirect
         localStorage.setItem("token", data.authToken);
-        alert("valid credentials");
+        alert("Password Updated And you are now logged In");
         history("/list");
       } else {
-        alert("invalid credentials");
+        alert(`Sorry Try Again ${data.message}`);
       }
     }
   };
-  const forgetPasswordHandler = async (e) => {
-    e.preventDefault();
-    console.log("forgetPasswordHandler");
-    const res = await fetch("http://localhost:5000/forgotPassword", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: emailForget }),
-    });
-    const data = await res.json();
-    if (data.status === "success") {
-      alert("Email sent you plz check");
-    } else {
-      alert(`fail ${data.message}`);
-    }
-    console.log(data);
-  };
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      history("/list");
+    if (!localStorage.getItem("token")) {
+      history("/login");
     }
     // eslint-disable-next-line
   }, []);
-
   return (
     <>
       <div className="container-fluid">
@@ -75,7 +60,7 @@ const Login = () => {
                   </div>
                   <div className="col-md-6 col-10 order-sm-0 order-md-1">
                     <h1 className="mt-5" id="signup-heading">
-                      Sign <span id="logohalfcolorchange">In</span>
+                      Update <span id="logohalfcolorchange">Password</span>
                     </h1>
                     <form className="mt-3" onSubmit={submitData}>
                       <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
@@ -84,13 +69,13 @@ const Login = () => {
                         </div>
                         <input
                           // required
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          type="email"
+                          value={currentPassword}
+                          onChange={(e) => setcurrentPassword(e.target.value)}
+                          type="currentPassword"
                           className="form-control"
-                          id="email"
-                          name="email"
-                          placeholder="Your Email"
+                          id="currentPassword"
+                          name="currentPassword"
+                          placeholder="currentPassword"
                         />
                       </div>
 
@@ -100,13 +85,31 @@ const Login = () => {
                         </div>
                         <input
                           // required
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setnewPassword(e.target.value)}
+                          type="newPassword"
                           className="form-control"
-                          id="password"
-                          name="password"
-                          placeholder="Your Password"
+                          id="newPassword"
+                          name="newPassword"
+                          placeholder="newPassword"
+                        />
+                      </div>
+
+                      <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
+                        <div className="mr-2">
+                          <i className="zmdi zmdi-lock zmdi-hc-3x mr-3"></i>
+                        </div>
+                        <input
+                          // required
+                          value={newPasswordConfirm}
+                          onChange={(e) =>
+                            setnewPasswordConfirm(e.target.value)
+                          }
+                          type="newPasswordConfirm"
+                          className="form-control"
+                          id="newPasswordConfirm"
+                          name="newPasswordConfirm"
+                          placeholder="newPasswordConfirm"
                         />
                       </div>
 
@@ -120,30 +123,6 @@ const Login = () => {
                         />
                       </div>
                     </form>
-
-                    <form className="mt-3" onSubmit={forgetPasswordHandler}>
-                      <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
-                        <div className="mr-2">
-                          <i className="zmdi zmdi-email zmdi-hc-3x mr-3"></i>
-                        </div>
-                        <input
-                          // required
-
-                          onChange={(e) => setEmailForget(e.target.value)}
-                          type="emailforget"
-                          className="form-control"
-                          id="emailforget"
-                          name="emailforget"
-                          placeholder="Your Email"
-                        />
-                      </div>
-                      <div className="mb-3 d-flex flex-row justify-content-center align-items-center">
-                        <div className="mr-2">
-                          <i className="zmdi zmdi-lock zmdi-hc-3x mr-3"></i>
-                        </div>
-                        <button className="navbar-brand">ForgetPassword</button>
-                      </div>
-                    </form>
                   </div>
                 </div>
               </div>
@@ -154,4 +133,4 @@ const Login = () => {
     </>
   );
 };
-export default Login;
+export default UpdatePassword;
